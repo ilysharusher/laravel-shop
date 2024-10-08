@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Carbon\CarbonInterval;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Model::shouldBeStrict(!app()->isProduction());
+
         RateLimiter::for('global', static function (Request $request) {
             return Limit::perMinute(500)
                 ->by($request->user()?->id ?: $request->ip())
@@ -33,12 +37,23 @@ class AppServiceProvider extends ServiceProvider
                 });
         });
 
-        Model::preventLazyLoading(!app()->isProduction());
-        Model::preventSilentlyDiscardingAttributes(!app()->isProduction());
-
         DB::whenQueryingForLongerThan(500, static function ($query, $time) {
-            // TODO: Log slow queries
+            logger()?->channel('telegram')->info('Slow query', [
+                'query' => $query,
+                'time' => $time,
+            ]);
         });
-        // TODO: Long request cycle
+
+        $kernel = app(Kernel::class);
+
+        $kernel->whenRequestLifecycleIsLongerThan(
+            CarbonInterval::seconds(3),
+            static function ($request, $time) {
+                logger()?->channel('telegram')->info('Slow request', [
+                    'request' => $request,
+                    'time' => $time,
+                ]);
+            }
+        );
     }
 }
