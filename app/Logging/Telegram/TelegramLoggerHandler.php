@@ -19,7 +19,8 @@ class TelegramLoggerHandler extends AbstractProcessingHandler
         TelegramBotApi::sendMessage(
             config('logging.channels.telegram.token'),
             config('logging.channels.telegram.chat_id'),
-            $record->formatted
+            "{$record['message']}
+            \n{$record['datetime']->format('Y-m-d H:i:s')}"
         );
     }
 }
