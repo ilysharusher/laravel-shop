@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
 class Category extends Model
@@ -16,8 +17,17 @@ class Category extends Model
         'title'
     ];
 
-    protected function setSlugAttribute($value): void
+    public function products(): BelongsToMany
     {
-        $this->attributes['slug'] = $value ?: Str::slug($this->attributes['title']);  // TODO - Check if this is correct (in 3rd lesson will be reviewed)
+        return $this->belongsToMany(Product::class);
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(static function (Category $category) {
+            $category->slug ??= Str::slug($category->title);
+        });
     }
 }

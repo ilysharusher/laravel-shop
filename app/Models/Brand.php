@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Brand extends Model
@@ -17,8 +18,17 @@ class Brand extends Model
         'thumbnail'
     ];
 
-    protected function setSlugAttribute($value): void
+    public function products(): HasMany
     {
-        $this->attributes['slug'] = $value ?: Str::slug($this->attributes['title']);  // TODO - Check if this is correct (in 3rd lesson will be reviewed)
+        return $this->hasMany(Product::class);
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(static function (Brand $brand) {
+            $brand->slug ??= Str::slug($brand->title);
+        });
     }
 }
