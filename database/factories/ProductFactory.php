@@ -21,7 +21,7 @@ class ProductFactory extends Factory
             'title' => $this->faker->sentence(),
             'thumbnail' => '', // TODO - Add thumbnail
             'price' => $this->faker->numberBetween(100, 1000),
-            'brand_id' => Brand::query()->inRandomOrder()->first()?->id
+            'brand_id' => Brand::query()->inRandomOrder()->first()
         ];
     }
 }
