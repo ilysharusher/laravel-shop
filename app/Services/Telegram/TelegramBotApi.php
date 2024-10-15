@@ -2,9 +2,9 @@
 
 namespace App\Services\Telegram;
 
-use App\Exceptions\TelegramBotApiException;
-use Exception;
+use App\Exceptions\Telegram\TelegramBotApiException;
 use Illuminate\Support\Facades\Http;
+use Throwable;
 
 class TelegramBotApi
 {
@@ -19,7 +19,7 @@ class TelegramBotApi
             ])->throw();
 
             return $response->successful();
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             report(new TelegramBotApiException($exception));
 
             return false;
