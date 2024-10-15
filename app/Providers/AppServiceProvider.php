@@ -17,14 +17,6 @@ use Symfony\Component\HttpFoundation\Response;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
      * Bootstrap any application services.
      */
     public function boot(): void
@@ -40,23 +32,15 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if (app()->isProduction()) {
-            DB::whenQueryingForLongerThan(CarbonInterval::seconds(5), static function (Connection $connection, QueryExecuted $event) {
-                logger()
-                    ?->channel('telegram')
-                    ->debug("Queries lifecycle took longer than 500ms: {$connection->totalQueryDuration()} ms - {$event->sql}");
-            });
-
             DB::listen(static function (QueryExecuted $query) {
                 if ($query->time > 100) {
                     logger()
                         ?->channel('telegram')
-                        ->debug("Query took longer than 100ms: {$query->time} ms - {$query->toRawSql()}");
+                        ->debug("Query took longer than 1s: {$query->time} ms - {$query->toRawSql()}");
                 }
             });
 
-            $kernel = app(Kernel::class);
-
-            $kernel->whenRequestLifecycleIsLongerThan(
+            app(Kernel::class)->whenRequestLifecycleIsLongerThan(
                 CarbonInterval::seconds(3),
                 static function ($startedAt, $request, $response) {
                     logger()
