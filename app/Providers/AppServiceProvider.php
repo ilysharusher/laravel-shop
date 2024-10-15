@@ -39,21 +39,31 @@ class AppServiceProvider extends ServiceProvider
                 });
         });
 
-        DB::whenQueryingForLongerThan(500, static function (Connection $connection, QueryExecuted $event) {
-            logger()
-                ?->channel('telegram')
-                ?->debug("Query took longer than 500ms: {$event->sql}");
-        });
-
-        $kernel = app(Kernel::class);
-
-        $kernel->whenRequestLifecycleIsLongerThan(
-            CarbonInterval::seconds(3),
-            static function ($startedAt, $request, $response) {
+        if (app()->isProduction()) {
+            DB::whenQueryingForLongerThan(CarbonInterval::seconds(5), static function (Connection $connection, QueryExecuted $event) {
                 logger()
                     ?->channel('telegram')
-                    ?->debug("Request lifecycle took longer than 3s: {$request->fullUrl()}");
-            }
-        );
+                    ->debug("Queries lifecycle took longer than 500ms: {$connection->totalQueryDuration()} ms - {$event->sql}");
+            });
+
+            DB::listen(static function (QueryExecuted $query) {
+                if ($query->time > 100) {
+                    logger()
+                        ?->channel('telegram')
+                        ->debug("Query took longer than 100ms: {$query->time} ms - {$query->toRawSql()}");
+                }
+            });
+
+            $kernel = app(Kernel::class);
+
+            $kernel->whenRequestLifecycleIsLongerThan(
+                CarbonInterval::seconds(3),
+                static function ($startedAt, $request, $response) {
+                    logger()
+                        ?->channel('telegram')
+                        ->debug("Request lifecycle took longer than 3s: {$request->fullUrl()}");
+                }
+            );
+        }
     }
 }
