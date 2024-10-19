@@ -18,9 +18,13 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->sentence(),
-            'thumbnail' => '', // TODO - Add thumbnail
-            'price' => $this->faker->numberBetween(100, 1000),
+            'title' => fake()->sentence(),
+            'thumbnail' => fake()->file(
+                base_path('tests/Fixtures/images/products'),
+                storage_path('app/public/images/products'),
+                false
+            ), // TODO: Move out this logic to a separate class with creating directories
+            'price' => fake()->numberBetween(100, 1000),
             'brand_id' => Brand::query()->inRandomOrder()->first()
         ];
     }
