@@ -18,7 +18,10 @@ class BrandFactory extends Factory
     {
         return [
             'title' => fake()->company(),
-            'thumbnail' => '' // TODO - Add thumbnail (in 3rd lesson will be added)
+            'thumbnail' => fake()->randomThumbnail(
+                'images/brands',
+                'images/brands'
+            )
         ];
     }
 }
