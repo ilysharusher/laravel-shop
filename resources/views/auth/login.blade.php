@@ -6,11 +6,17 @@
     <div class="max-w-[640px] mt-12 mx-auto p-6 xs:p-8 md:p-12 2xl:p-16 rounded-[20px] bg-purple">
         <h1 class="mb-5 text-lg font-semibold">Sign in to your account</h1>
         <form class="space-y-3">
-            <x-forms.text-input type="email" placeholder="E-mail" required/>
-            <input type="password"
-                   class="w-full h-14 px-4 rounded-lg border border-[#A07BF0] bg-white/20 focus:border-pink focus:shadow-[0_0_0_2px_#EC4176] outline-none transition text-white placeholder:text-white text-xxs md:text-xs font-semibold"
-                   placeholder="Пароль" required>
-            <button type="submit" class="w-full btn btn-pink">Sign in</button>
+
+            <x-forms.text-input name="email" :error="$errors->has('email')" type="email" placeholder="E-mail"
+                                required="true"/>
+            @error('email')
+            <x-forms.error>{{ $message }}</x-forms.error>
+            @enderror
+
+            <x-forms.text-input name="password" :error="$errors->has('password')" type="password" placeholder="Password"
+                                required="true"/>
+
+            <x-forms.primary-button>Sign in</x-forms.primary-button>
         </form>
         <ul class="space-y-3 mt-5">
             <li>
@@ -27,10 +33,10 @@
             </li>
         </ul>
         <div class="space-y-3 mt-5">
-            <div class="text-xxs md:text-xs"><a href="lost-password.html"
+            <div class="text-xxs md:text-xs"><a href="#"
                                                 class="text-white hover:text-white/70 font-bold">Forgot password?</a>
             </div>
-            <div class="text-xxs md:text-xs"><a href="register.html"
+            <div class="text-xxs md:text-xs"><a href="#"
                                                 class="text-white hover:text-white/70 font-bold">Registration</a>
             </div>
         </div>
