@@ -1,14 +1,14 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.auth')
 
-        <title>Laravel</title>
+@section('content')
+    @auth
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            @method('DELETE')
 
-        @vite(['resources/css/app.css', 'resources/sass/main.sass', 'resources/js/app.js'])
-    </head>
-    <body class="antialiased">
-
-    </body>
-</html>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Logout
+            </button>
+        </form>
+    @endauth
+@endsection

@@ -3,7 +3,7 @@
 @section('title', 'Password recovery')
 
 @section('content')
-    <x-forms.auth-forms title="Password recovery" action="">
+    <x-forms.auth-forms title="Password recovery" action="" method="POST">
         @csrf
 
         <x-inputs.text-input name="email" :error="$errors->has('email')" type="email" placeholder="E-mail"

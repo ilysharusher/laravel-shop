@@ -3,16 +3,18 @@
 @section('title', 'Sign up')
 
 @section('content')
-    <x-forms.auth-forms title="Sign up to your account" action="">
+    <x-forms.auth-forms title="Sign up to your account" action="{{ route('register.store') }}" method="POST">
         @csrf
 
         <x-inputs.text-input name="name" :error="$errors->has('name')" type="text" placeholder="Your name"
+                             value="{{ old('name') }}"
                              required="true"/>
         @error('name')
         <x-inputs.error>{{ $message }}</x-inputs.error>
         @enderror
 
         <x-inputs.text-input name="email" :error="$errors->has('email')" type="email" placeholder="E-mail"
+                             value="{{ old('email') }}"
                              required="true"/>
         @error('email')
         <x-inputs.error>{{ $message }}</x-inputs.error>

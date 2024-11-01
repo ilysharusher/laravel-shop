@@ -3,10 +3,11 @@
 @section('title', 'Sign in')
 
 @section('content')
-    <x-forms.auth-forms title="Sign in to your account" action="">
+    <x-forms.auth-forms title="Sign in to your account" action="{{ route('login.store') }}" method="POST">
         @csrf
 
         <x-inputs.text-input name="email" :error="$errors->has('email')" type="email" placeholder="E-mail"
+                             value="{{ old('email') }}"
                              required="true"/>
         @error('email')
         <x-inputs.error>{{ $message }}</x-inputs.error>
@@ -23,7 +24,7 @@
 
         <x-slot:additionalButtons>
             <div class="text-xxs md:text-xs">
-                <a href="{{ route('forgot-password') }}" class="text-white hover:text-white/70 font-bold">Forgot password?</a>
+                <a href="{{ route('forgot.password') }}" class="text-white hover:text-white/70 font-bold">Forgot password?</a>
             </div>
             <div class="text-xxs md:text-xs">
                 <a href="{{ route('register') }}" class="text-white hover:text-white/70 font-bold">Registration</a>

@@ -3,8 +3,9 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
-class SignInFormRequest extends FormRequest
+class RegisterFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +23,16 @@ class SignInFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email:dns', 'exists:users,email'],
-            'password' => ['required'],
+            'name' => ['required', 'string', 'min:3'],
+            'email' => ['required', 'email:dns', 'unique:users'],
+            'password' => ['required', 'confirmed', Password::default()],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'email' => strtolower(trim(request('email'))),
+        ]);
     }
 }

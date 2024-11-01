@@ -1,6 +1,7 @@
 @props([
     'type' => 'text',
     'error' => false,
+    'value' => '',
     'required' => false,
 ])
 
@@ -11,6 +12,7 @@
         ])
         ->merge([
             'type' => $type,
+            'value' => $value,
             'required' => $required,
         ])
     }}
