@@ -24,7 +24,7 @@
 
         <x-slot:additionalButtons>
             <div class="text-xxs md:text-xs">
-                <a href="{{ route('forgot.password') }}" class="text-white hover:text-white/70 font-bold">Forgot password?</a>
+                <a href="{{ route('password.request') }}" class="text-white hover:text-white/70 font-bold">Forgot password?</a>
             </div>
             <div class="text-xxs md:text-xs">
                 <a href="{{ route('register') }}" class="text-white hover:text-white/70 font-bold">Registration</a>

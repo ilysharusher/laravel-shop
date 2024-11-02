@@ -3,10 +3,13 @@
 @section('title', 'Password recovery')
 
 @section('content')
-    <x-forms.auth-forms title="Password recovery" action="" method="POST">
+    <x-forms.auth-forms title="Password recovery" action="{{ route('password.update') }}" method="POST">
         @csrf
 
+        <input type="hidden" name="token" value="{{ $token }}">
+
         <x-inputs.text-input name="email" :error="$errors->has('email')" type="email" placeholder="E-mail"
+                             value="{{ request()->get('email') }}"
                              required="true"/>
         @error('email')
         <x-inputs.error>{{ $message }}</x-inputs.error>

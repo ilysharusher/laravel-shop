@@ -3,7 +3,7 @@
 @section('title', 'Forgot password')
 
 @section('content')
-    <x-forms.auth-forms title="Forgot password" action="" method="POST">
+    <x-forms.auth-forms title="Forgot password" action="{{ route('password.email') }}" method="POST">
         @csrf
 
         <x-inputs.text-input name="email" :error="$errors->has('email')" type="email" placeholder="E-mail for password reset"
