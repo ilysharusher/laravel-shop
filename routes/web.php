@@ -11,6 +11,9 @@ Route::controller(AuthController::class)->group(function () {
         Route::get('login', 'login')->name('login');
         Route::post('login', 'login_store')->name('login.store');
 
+        Route::get('auth/redirect', 'redirect')->name('redirect');
+        Route::get('auth/callback', 'callback')->name('callback');
+
         Route::get('register', 'register')->name('register');
         Route::post('register', 'register_store')->name('register.store');
 

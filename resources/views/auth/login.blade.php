@@ -19,7 +19,7 @@
         <x-buttons.primary-button>Sign in</x-buttons.primary-button>
 
         <x-slot:social>
-            <x-buttons.github-button href="#">GitHub</x-buttons.github-button>
+            <x-buttons.github-button href="{{ route('redirect') }}">GitHub</x-buttons.github-button>
         </x-slot:social>
 
         <x-slot:additionalButtons>
