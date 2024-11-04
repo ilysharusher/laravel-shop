@@ -23,11 +23,11 @@ class AppServiceProvider extends ServiceProvider
         Model::shouldBeStrict(!app()->isProduction());
 
         RateLimiter::for('global', static function (Request $request) {
-            return Limit::perMinute(500)
-                ->by($request->user()?->id ?: $request->ip())
-                ->response(static function () {
-                    return response('Too Many Requests', Response::HTTP_TOO_MANY_REQUESTS);
-                });
+            return Limit::perMinute(500)->by($request->user()?->id ?: $request->ip());
+        });
+
+        RateLimiter::for('auth', static function (Request $request) {
+            return Limit::perMinute(20)->by($request->ip());
         });
 
         if (app()->isProduction()) {

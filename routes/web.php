@@ -8,14 +8,16 @@ Route::middleware('auth')->get('/', HomeController::class)->name('home');
 
 Route::controller(AuthController::class)->group(function () {
     Route::middleware('guest')->group(function () {
-        Route::get('login', 'login')->name('login');
-        Route::post('login', 'login_store')->name('login.store');
+        Route::middleware('throttle:auth')->group(function () {
+            Route::get('login', 'login')->name('login');
+            Route::post('login', 'login_store')->name('login.store');
 
-        Route::get('auth/redirect', 'redirect')->name('redirect');
-        Route::get('auth/callback', 'callback')->name('callback');
+            Route::get('auth/redirect', 'redirect')->name('redirect');
+            Route::get('auth/callback', 'callback')->name('callback');
 
-        Route::get('register', 'register')->name('register');
-        Route::post('register', 'register_store')->name('register.store');
+            Route::get('register', 'register')->name('register');
+            Route::post('register', 'register_store')->name('register.store');
+        });
 
         Route::name('password.')->group(function () {
             Route::get('forgot-password', 'forgot_password')->name('request');
