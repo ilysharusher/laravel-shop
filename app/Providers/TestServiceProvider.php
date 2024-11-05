@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Faker\FakerThumbnailProvider;
+use App\Support\Testing\FakerThumbnailProvider;
 use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Support\ServiceProvider;
