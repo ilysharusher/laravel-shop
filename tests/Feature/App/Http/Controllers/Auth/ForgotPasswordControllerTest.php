@@ -44,6 +44,8 @@ class ForgotPasswordControllerTest extends TestCase
 
     public function test_forgot_password_page_success(): void
     {
+        // TODO Add unsuccessful tests for all ones
+        // TODO Try to write tests for Socialite
         $this->get(action([ForgotPasswordController::class, 'page']))
             ->assertOk()
             ->assertViewIs('auth.forgot-password');

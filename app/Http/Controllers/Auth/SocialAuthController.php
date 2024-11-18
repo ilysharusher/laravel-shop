@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Domain\Auth\Models\User;
+use Domain\Auth\Contracts\SocialAuthContract;
 use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
@@ -20,23 +20,9 @@ class SocialAuthController extends Controller
         }
     }
 
-    public function callback(string $driver): RedirectResponse
+    public function callback(string $driver, SocialAuthContract $contract): RedirectResponse
     {
-        if ($driver !== 'github') {
-            throw new DomainException('Invalid driver');
-        }
-
-        $socialUser = Socialite::driver($driver)->user();
-
-        $user = User::query()->updateOrCreate([
-            $driver . '_id' => $socialUser->id,
-        ], [
-            'name' => $socialUser->name,
-            'email' => $socialUser->email,
-            'password' => bcrypt(str()->random(60)),
-        ]);
-
-        auth()->login($user);
+        $contract($driver);
 
         return redirect()->intended(route('home'));
     }
