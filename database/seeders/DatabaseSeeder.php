@@ -15,7 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // TODO Class "Database\Factories\Domain\Auth\Models\UserFactory" not found
         Brand::factory(20)->create();
 
         Category::factory(3)->has(
