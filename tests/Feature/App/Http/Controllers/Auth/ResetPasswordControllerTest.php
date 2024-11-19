@@ -8,25 +8,12 @@ use Database\Factories\UserFactory;
 use Domain\Auth\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class ResetPasswordControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Notification::fake();
-        Event::fake();
-
-        $this->withExceptionHandling();
-    }
-
     private function forgot_password(): User
     {
         $user = UserFactory::new()->create();
@@ -58,6 +45,27 @@ class ResetPasswordControllerTest extends TestCase
         });
     }
 
+    public function test_reset_password_token_invalid(): void
+    {
+        $user = $this->forgot_password();
+
+        $data = [
+            'email' => $user->email,
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'token' => 'invalid-token',
+        ];
+
+        $this->post(
+            action([ResetPasswordController::class, 'handle']),
+            $data
+        )->assertSessionHasErrors('email');
+
+        $this->assertDatabaseHas('password_reset_tokens', [
+            'email' => $user->email,
+        ]);
+    }
+
     public function test_reset_password_store_success(): void
     {
         $user = $this->forgot_password();
@@ -78,6 +86,31 @@ class ResetPasswordControllerTest extends TestCase
             Event::assertDispatched(PasswordReset::class);
 
             $this->assertDatabaseMissing('password_reset_tokens', [
+                'email' => $user->email,
+            ]);
+
+            return true;
+        });
+    }
+
+    public function test_reset_password_password_confirmation_mismatch(): void
+    {
+        $user = $this->forgot_password();
+
+        Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
+            $data = [
+                'email' => $user->email,
+                'password' => 'password',
+                'password_confirmation' => 'different-password',
+                'token' => $notification->token,
+            ];
+
+            $this->post(
+                action([ResetPasswordController::class, 'handle']),
+                $data
+            )->assertSessionHasErrors('password');
+
+            $this->assertDatabaseHas('password_reset_tokens', [
                 'email' => $user->email,
             ]);
 
