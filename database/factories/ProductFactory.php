@@ -24,6 +24,8 @@ class ProductFactory extends Factory
                 'images/products'
             ),
             'price' => fake()->numberBetween(100, 1000),
+            'on_home_page' => fake()->boolean(),
+            'sorting' => fake()->numberBetween(1, 1000),
             'brand_id' => Brand::query()->inRandomOrder()->first()
         ];
     }

@@ -17,6 +17,9 @@ return new class () extends Migration {
             $table->string('title');
             $table->string('thumbnail')->nullable();
 
+            $table->boolean('on_home_page')->default(false);
+            $table->integer('sorting')->default(500);
+
             $table->timestamps();
         });
     }

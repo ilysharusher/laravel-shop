@@ -16,7 +16,9 @@ class Brand extends Model
     protected $fillable = [
         'slug',
         'title',
-        'thumbnail'
+        'thumbnail',
+        'on_home_page',
+        'sorting',
     ];
 
     public function products(): HasMany

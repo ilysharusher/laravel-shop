@@ -21,7 +21,9 @@ class BrandFactory extends Factory
             'thumbnail' => fake()->randomThumbnail(
                 'images/brands',
                 'images/brands'
-            )
+            ),
+            'on_home_page' => fake()->boolean(),
+            'sorting' => fake()->numberBetween(1, 1000),
         ];
     }
 }
