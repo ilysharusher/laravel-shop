@@ -27,6 +27,6 @@ class FakerThumbnailProvider extends Base
             $fullPath
         );
 
-        return 'storage/public/' . $to . '/' . $filePath;
+        return 'storage/' . $to . '/' . $filePath;
     }
 }
