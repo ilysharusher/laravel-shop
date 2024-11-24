@@ -51,7 +51,7 @@ class User extends Authenticatable
     public function avatar(): Attribute
     {
         return Attribute::make(
-            get: fn() => 'https://ui-avatars.com/api/?name=' . urlencode($this->name)
+            get: fn () => 'https://ui-avatars.com/api/?name=' . urlencode($this->name)
         );
     }
 }
