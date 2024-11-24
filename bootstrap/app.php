@@ -1,20 +1,16 @@
 <?php
 
-use App\Actions\mapRoutesAction;
-use Illuminate\Contracts\Routing\Registrar;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Sentry\Laravel\Integration;
 
-$registrars = [
-    \App\Routing\AppRegistrar::class,
-    \Domain\Auth\Routing\AuthRegistrar::class,
-];
-
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        using: fn (Registrar $router) => mapRoutesAction::mapRoutes($router, $registrars),
+        web: [
+            __DIR__ . '/../routes/web.php',
+            __DIR__ . '/../routes/Domain/auth.php',
+        ],
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
