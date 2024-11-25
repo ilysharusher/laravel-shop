@@ -22,7 +22,9 @@ class SocialAuthController extends Controller
 
     public function callback(string $driver, SocialAuthContract $contract): RedirectResponse
     {
-        $contract($driver);
+        $user = $contract($driver);
+
+        auth()->login($user);
 
         return redirect()->intended(route('home'));
     }

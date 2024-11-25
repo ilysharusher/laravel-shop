@@ -16,7 +16,9 @@ class RegisterController extends Controller
 
     public function handle(RegisterFormRequest $request, RegisterUserContract $contract): RedirectResponse
     {
-        $contract($request->name, $request->email, $request->password);
+        $user = $contract($request->name, $request->email, $request->password);
+
+        auth()->login($user);
 
         return redirect()->intended(route('home'));
     }

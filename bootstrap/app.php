@@ -8,8 +8,8 @@ use Sentry\Laravel\Integration;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: [
-            __DIR__ . '/../routes/web.php',
-            __DIR__ . '/../routes/Domain/auth.php',
+            __DIR__ . '/../routes/web/web.php',
+            __DIR__ . '/../routes/web/auth.php',
         ],
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',

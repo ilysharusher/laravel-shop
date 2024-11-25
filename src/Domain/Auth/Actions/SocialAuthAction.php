@@ -10,20 +10,18 @@ use Throwable;
 
 class SocialAuthAction implements SocialAuthContract
 {
-    public function __invoke(string $driver): void
+    public function __invoke(string $driver): User
     {
         try {
             $socialUser = Socialite::driver($driver)->user();
 
-            $user = User::query()->updateOrCreate([
+            return User::query()->updateOrCreate([
                 $driver . '_id' => $socialUser->id,
             ], [
                 'name' => $socialUser->name,
                 'email' => $socialUser->email,
                 'password' => bcrypt(str()->random(60)),
             ]);
-
-            auth()->login($user);
         } catch (Throwable $e) {
             throw new DomainException('Invalid driver or user not found');
         }
