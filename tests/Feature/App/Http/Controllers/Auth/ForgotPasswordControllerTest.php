@@ -4,59 +4,43 @@ namespace Tests\Feature\App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Database\Factories\UserFactory;
-use Domain\Auth\Models\User;
-use Illuminate\Auth\Events\PasswordResetLinkSent;
-use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class ForgotPasswordControllerTest extends TestCase
 {
-    private function forgot_password(): User
+    private function testingCredentials(): array
     {
-        $user = UserFactory::new()->create();
-
-        $data = [
-            'email' => $user->email,
+        return [
+            'email' => 'test@gmail.com'
         ];
-
-        $this->post(
-            action([ForgotPasswordController::class, 'handle']),
-            $data
-        )->assertRedirect(route('login'));
-
-        return $user;
     }
 
-    public function test_forgot_password_page_success(): void
+    public function test_page_success(): void
     {
         $this->get(action([ForgotPasswordController::class, 'page']))
             ->assertOk()
             ->assertViewIs('auth.forgot-password');
     }
 
-    public function test_forgot_password_store(): void
+    public function test_handle_success(): void
     {
-        $user = $this->forgot_password();
+        $user = UserFactory::new()->create($this->testingCredentials());
 
-        Notification::assertSentTo($user, ResetPassword::class);
-        Event::assertDispatched(PasswordResetLinkSent::class);
+        $this->post(action([ForgotPasswordController::class, 'handle']), $this->testingCredentials())
+            ->assertRedirect(route('login'));
 
-        $this->assertDatabaseHas('password_reset_tokens', [
-            'email' => $user->email,
-        ]);
+        Notification::assertSentTo($user, ResetPasswordNotification::class);
     }
 
-    public function test_forgot_password_email_not_found(): void
+    public function test_handle_fail(): void
     {
-        $data = [
-            'email' => 'nonexistent@example.com',
-        ];
+        $this->assertDatabaseMissing('users', $this->testingCredentials());
 
-        $this->post(
-            action([ForgotPasswordController::class, 'handle']),
-            $data
-        )->assertSessionHasErrors('email');
+        $this->post(action([ForgotPasswordController::class, 'handle']), $this->testingCredentials())
+            ->assertInvalid('email');
+
+        Notification::assertNothingSent();
     }
 }

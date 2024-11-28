@@ -16,10 +16,10 @@ class SocialAuthAction implements SocialAuthContract
             $socialUser = Socialite::driver($driver)->user();
 
             return User::query()->updateOrCreate([
-                $driver . '_id' => $socialUser->id,
+                $driver . '_id' => $socialUser->getId(),
             ], [
-                'name' => $socialUser->name,
-                'email' => $socialUser->email,
+                'name' => $socialUser->getName(),
+                'email' => $socialUser->getEmail(),
                 'password' => bcrypt(str()->random(60)),
             ]);
         } catch (Throwable $e) {

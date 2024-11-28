@@ -15,7 +15,7 @@ class LoginControllerTest extends TestCase
             ->assertViewIs('auth.login');
     }
 
-    public function test_login_store_success(): void
+    public function test_login_success(): void
     {
         $password = 'password';
 
@@ -39,7 +39,7 @@ class LoginControllerTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    public function test_login_store_wrong_password(): void
+    public function test_wrong_password(): void
     {
         $password = 'wrong_password';
 
@@ -58,28 +58,22 @@ class LoginControllerTest extends TestCase
         $this->post(
             action([LoginController::class, 'handle']),
             $data
-        )
-            ->assertInvalid()
-            ->assertSessionHasErrors('email');
+        )->assertInvalid('email');
 
         $this->assertGuest();
     }
 
-    public function test_login_store_user_not_found(): void
+    public function test_user_not_found(): void
     {
-        $data = [
-            'email' => 'nonexistent@gmail.com',
-            'password' => 'password',
-        ];
-
         $this->assertGuest();
 
         $this->post(
             action([LoginController::class, 'handle']),
-            $data
-        )
-            ->assertInvalid()
-            ->assertSessionHasErrors('email');
+            [
+                'email' => 'nonexistent@gmail.com',
+                'password' => 'password',
+            ]
+        )->assertInvalid('email');
 
         $this->assertGuest();
     }

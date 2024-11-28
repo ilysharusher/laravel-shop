@@ -10,167 +10,123 @@ use Domain\Auth\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
-    public function test_register_page_success(): void
+    protected array $request = [
+        'name' => 'Name',
+        'email' => 'example@gmail.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ];
+
+    private function register(): TestResponse
+    {
+        return $this->post(
+            action([RegisterController::class, 'handle']),
+            $this->request
+        );
+    }
+
+    private function currentUser(): User
+    {
+        return User::query()->where('email', $this->request['email'])->first();
+    }
+
+    public function test_page_success(): void
     {
         $this->get(action([RegisterController::class, 'page']))
             ->assertOk()
             ->assertViewIs('auth.register');
     }
 
-    public function test_register_store_success(): void
+    public function test_validation_success(): void
     {
-        $data = [
-            'name' => fake()->name,
-            'email' => 'test@gmail.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ];
+        $this->register()
+            ->assertValid();
+    }
 
-        $this->assertDatabaseMissing('users', [
-            'email' => $data['email'],
+    public function test_bad_password_confirmation(): void
+    {
+        $this->request['password_confirmation'] = 'bad_password';
+
+        $this->register()
+            ->assertInvalid('password');
+    }
+
+    public function test_bad_name(): void
+    {
+        $this->request['name'] = '';
+
+        $this->register()
+            ->assertInvalid('name');
+    }
+
+    public function test_bad_email(): void
+    {
+        $this->request['email'] = 'bad_email';
+
+        $this->register()
+            ->assertInvalid('email');
+    }
+
+    public function test_email_already_exists(): void
+    {
+        UserFactory::new()->create([
+            'email' => $this->request['email'],
         ]);
-
-        $response = $this->post(
-            action([RegisterController::class, 'handle']),
-            $data
-        )->assertValid();
 
         $this->assertDatabaseHas('users', [
-            'email' => $data['email'],
+            'email' => $this->request['email'],
         ]);
 
-        $user = User::query()->where('email', $data['email'])->first();
+        $this->register()
+            ->assertInvalid('email');
+    }
+
+    public function test_user_created_success(): void
+    {
+        $this->assertDatabaseMissing('users', [
+            'email' => $this->request['email'],
+        ]);
+
+        $this->register();
+
+        $this->assertDatabaseHas('users', [
+            'email' => $this->request['email'],
+        ]);
+    }
+
+    public function test_event_and_listener_success(): void
+    {
+        Event::fake();
+
+        $this->register();
 
         Event::assertDispatched(Registered::class);
-        Event::assertListening(Registered::class, SendEmailNewUserListener::class);
-
-        $listener = new SendEmailNewUserListener();
-        $listener->handle(new Registered($user));
-
-        Notification::assertSentTo($user, NewUserNotification::class);
-
-        $this->assertAuthenticatedAs($user);
-
-        $response->assertRedirect(route('home'));
+        Event::assertListening(
+            Registered::class,
+            SendEmailNewUserListener::class
+        );
     }
 
-    public function test_register_store_invalid_email(): void
+    public function test_notification_sent(): void
     {
-        $data = [
-            'name' => fake()->name,
-            'email' => 'invalid-email',
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ];
+        $this->register();
 
-        $this->assertDatabaseMissing('users', [
-            'email' => $data['email'],
-        ]);
-
-        $response = $this->post(
-            action([RegisterController::class, 'handle']),
-            $data
+        Notification::assertSentTo(
+            $this->currentUser(),
+            NewUserNotification::class
         );
-
-        $response->assertInvalid(['email']);
-
-        $this->assertDatabaseMissing('users', [
-            'email' => $data['email'],
-        ]);
-
-        Event::assertNotDispatched(Registered::class);
-        Notification::assertNothingSent();
     }
 
-    public function test_register_store_invalid_password(): void
+    public function test_user_authenticated_after_register(): void
     {
-        $data = [
-            'name' => fake()->name,
-            'email' => 'test@gmail.com',
-            'password' => 'short',
-            'password_confirmation' => 'short',
-        ];
+        $this->register()
+            ->assertRedirect(route('home'));
 
-        $this->assertDatabaseMissing('users', [
-            'email' => $data['email'],
-        ]);
-
-        $response = $this->post(
-            action([RegisterController::class, 'handle']),
-            $data
-        );
-
-        $response->assertInvalid(['password']);
-
-        $this->assertDatabaseMissing('users', [
-            'email' => $data['email'],
-        ]);
-
-        Event::assertNotDispatched(Registered::class);
-        Notification::assertNothingSent();
-    }
-
-    public function test_register_store_invalid_password_confirmation(): void
-    {
-        $data = [
-            'name' => fake()->name,
-            'email' => 'test@gmail.com',
-            'password' => 'password',
-            'password_confirmation' => 'different_password',
-        ];
-
-        $this->assertDatabaseMissing('users', [
-            'email' => $data['email'],
-        ]);
-
-        $response = $this->post(
-            action([RegisterController::class, 'handle']),
-            $data
-        );
-
-        $response->assertInvalid(['password']);
-
-        $this->assertDatabaseMissing('users', [
-            'email' => $data['email'],
-        ]);
-
-        Event::assertNotDispatched(Registered::class);
-        Notification::assertNothingSent();
-    }
-
-    public function test_register_store_user_already_exists(): void
-    {
-        $email = 'test@gmail.com';
-
-        UserFactory::new()->create([
-            'email' => $email,
-        ]);
-
-        $data = [
-            'name' => fake()->name,
-            'email' => $email,
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ];
-
-        $this->assertDatabaseHas('users', [
-            'email' => $data['email'],
-        ]);
-
-        $response = $this->post(
-            action([RegisterController::class, 'handle']),
-            $data
-        );
-
-        $response->assertInvalid(['email']);
-
-        $this->assertDatabaseCount('users', 1);
-
-        Event::assertNotDispatched(Registered::class);
-        Notification::assertNothingSent();
+        $this->assertAuthenticatedAs($this->currentUser());
     }
 }

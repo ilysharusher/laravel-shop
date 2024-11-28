@@ -22,7 +22,7 @@ class LogoutControllerTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_logout_fail(): void
+    public function test_user_not_authenticated(): void
     {
         $this->assertGuest();
 
