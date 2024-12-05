@@ -18,11 +18,7 @@ class RegisterUserActionTest extends TestCase
 
         $action = app(RegisterUserContract::class);
 
-        $action(NewUserDTO::make([
-            'John Doe',
-            $email,
-            'password',
-        ]));
+        $action(NewUserDTO::make('John Doe', $email, 'password'));
 
         $this->assertDatabaseHas('users', [
             'email' => $email
