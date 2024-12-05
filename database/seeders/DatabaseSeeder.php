@@ -2,12 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Product;
 use Database\Factories\BrandFactory;
 use Database\Factories\CategoryFactory;
 use Database\Factories\ProductFactory;
-use Domain\Catalog\Models\Brand;
-use Domain\Catalog\Models\Category;
 use Illuminate\Database\Seeder;
 use Random\RandomException;
 
