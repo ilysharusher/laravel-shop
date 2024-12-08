@@ -4,7 +4,9 @@ namespace Domain\Catalog\Models;
 
 use App\Models\Product;
 use Domain\Catalog\Collections\CategoryCollection;
+use Domain\Catalog\Observers\CategoryObserver;
 use Domain\Catalog\QueryBuilders\CategoryQueryBuilder;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,6 +15,7 @@ use Support\Traits\Models\HasSlug;
 /**
  * @method static Category|CategoryQueryBuilder query()
  */
+#[ObservedBy(CategoryObserver::class)]
 class Category extends Model
 {
     /** @use HasFactory<\Database\Factories\CategoryFactory> */

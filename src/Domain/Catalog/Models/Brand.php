@@ -3,7 +3,9 @@
 namespace Domain\Catalog\Models;
 
 use App\Models\Product;
+use Domain\Catalog\Observers\BrandObserver;
 use Domain\Catalog\QueryBuilders\BrandQueryBuilder;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,6 +15,7 @@ use Support\Traits\Models\HasThumbnail;
 /**
  * @method static Brand|BrandQueryBuilder query()
  */
+#[ObservedBy(BrandObserver::class)]
 class Brand extends Model
 {
     /** @use HasFactory<\Database\Factories\BrandFactory> */
