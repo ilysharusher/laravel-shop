@@ -12,3 +12,6 @@ Route::get('storage/images/{dir}/{method}/{size}/{file}', ThumbnailController::c
         'size' => '\d+x\d+',
         'file' => '.+\.(jpg|jpeg|png|gif)$',
     ])->name('thumbnail');
+
+include __DIR__ . '/Domain/auth.php';
+include __DIR__ . '/Domain/catalog.php';
