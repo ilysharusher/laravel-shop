@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Domain\Catalog\Models\Brand;
 use Domain\Catalog\Models\Category;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 
 class CatalogController extends Controller
@@ -20,6 +21,11 @@ class CatalogController extends Controller
         $categories = Category::query()->select('id', 'title', 'slug')
             ->has('products')->get();
         $products = Product::query()->select('id', 'slug', 'title', 'thumbnail', 'price')
+            ->when($category?->exists, function (Builder $query) use ($category) {
+                $query->whereRelation('categories', 'categories.id', $category->id);
+            })
+            ->filtered()
+            ->sorted()
             ->paginate(6);
 
         return view('catalog.index', compact('brands', 'categories', 'products', 'category'));

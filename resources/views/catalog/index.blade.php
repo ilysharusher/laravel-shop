@@ -76,11 +76,13 @@
                         </button>
                     </div>
 
-                    <div>
-                        <a href="{{ route('catalog', $category) }}" class="w-full !h-16 btn btn-outline">
-                            Reset filters
-                        </a>
-                    </div>
+                    @if(request()->input('filters'))
+                        <div>
+                            <a href="{{ route('catalog', $category) }}" class="w-full !h-16 btn btn-outline">
+                                Reset filters
+                            </a>
+                        </div>
+                    @endif
                 </form>
             </aside>
 

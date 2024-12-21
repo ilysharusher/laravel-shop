@@ -46,6 +46,31 @@ class Product extends Model
             ->limit(6);
     }
 
+    public function scopeFiltered(Builder $query): void
+    {
+        $query->when(request()->filled('filters.brands'), function (Builder $query) {
+            $query->whereIn('brand_id', request('filters.brands'));
+        })->when(request()->filled('filters.price'), function (Builder $query) {
+            $query->whereBetween('price', [
+                request('filters.price.from', 0) * 100,
+                request('filters.price.to', 100000) * 100
+            ]);
+        });
+    }
+
+    public function scopeSorted(Builder $builder): void
+    {
+        $builder->when(request()->filled('sort'), function (Builder $builder) {
+            $column = request()->str('sort');
+
+            if ($column->contains(['price', 'title'])) {
+                $direction = $column->contains('-') ? 'desc' : 'asc';
+
+                $builder->orderBy((string)$column->remove('-'), $direction);
+            }
+        });
+    }
+
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
