@@ -34,13 +34,21 @@
                             <span class="text-body text-xxs font-medium">To, $</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <input type="number"
-                                   class="w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xs shadow-transparent outline-0 transition"
-                                   value="9800" placeholder="From">
+                            <input
+                                name="filters[price][from]"
+                                value="{{ request()->input('filters.price.from', 0) }}"
+                                type="number"
+                                class="w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xs shadow-transparent outline-0 transition"
+                                placeholder="From"
+                            >
                             <span class="text-body text-sm font-medium">–</span>
-                            <input type="number"
-                                   class="w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xs shadow-transparent outline-0 transition"
-                                   value="142800" placeholder="To">
+                            <input
+                                name="filters[price][to]"
+                                value="{{ request()->input('filters.price.to', 100000) }}"
+                                type="number"
+                                class="w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xs shadow-transparent outline-0 transition"
+                                placeholder="To"
+                            >
                         </div>
                     </div>
                     <div>
@@ -48,7 +56,13 @@
 
                         @foreach($brands as $brand)
                             <div class="form-checkbox">
-                                <input type="checkbox" id="filters-brands-{{ $brand->id }}">
+                                <input
+                                    name="filters[brands][{{ $brand->id }}]"
+                                    value="{{ $brand->id }}"
+                                    type="checkbox"
+                                    id="filters-brands-{{ $brand->id }}"
+                                    @checked(request()->input("filters.brands.{$brand->id}"))
+                                >
                                 <label for="filters-brands-{{ $brand->id }}" class="form-checkbox-label">
                                     {{ $brand->title }}
                                 </label>
@@ -95,15 +109,26 @@
                         </div>
                         <div class="text-body text-xxs sm:text-xs">Found: {{ $products->count() }} products</div>
                     </div>
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <div x-data="{}" class="flex flex-col sm:flex-row sm:items-center gap-3">
                         <span class="text-body text-xxs sm:text-xs">Sort by</span>
-                        <form action="{{ route('catalog', $category) }}">
+                        <form x-ref="sort" action="{{ route('catalog', $category) }}">
                             <select
+                                x-on:change="$refs.sort.submit()"
+                                name="sort"
                                 class="form-select w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xxs sm:text-xs shadow-transparent outline-0 transition">
                                 <option value="" class="text-dark">Default</option>
-                                <option value="" class="text-dark">Cheaper</option>
-                                <option value="" class="text-dark">More expensive</option>
-                                <option value="" class="text-dark">By name</option>
+                                <option
+                                    @selected(request()->input('sort') === 'price')
+                                    value="price" class="text-dark">Cheaper
+                                </option>
+                                <option
+                                    @selected(request()->input('sort') === '-price')
+                                    value="-price" class="text-dark">More expensive
+                                </option>
+                                <option
+                                    @selected(request()->input('sort') === 'title')
+                                    value="title" class="text-dark">By name
+                                </option>
                             </select>
                         </form>
                     </div>
