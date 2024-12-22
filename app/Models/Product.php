@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Laravel\Scout\Attributes\SearchUsingFullText;
+use Laravel\Scout\Searchable;
 use Support\Casts\PriceCast;
 use Support\Traits\Models\HasSlug;
 use Support\Traits\Models\HasThumbnail;
@@ -19,10 +21,12 @@ class Product extends Model
     use HasFactory;
     use HasSlug;
     use HasThumbnail;
+    use Searchable;
 
     protected $fillable = [
         'slug',
         'title',
+        'description',
         'thumbnail',
         'price',
         'brand_id',
@@ -37,6 +41,15 @@ class Product extends Model
     protected function thumbnailDir(): string
     {
         return 'products';
+    }
+
+    #[SearchUsingFullText(['title', 'description'])]
+    public function toSearchableArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'description' => $this->description,
+        ];
     }
 
     public function scopeHomePage(Builder $query): void

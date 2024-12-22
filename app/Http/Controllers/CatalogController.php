@@ -20,12 +20,15 @@ class CatalogController extends Controller
             ->has('products')->get();
         $categories = Category::query()->select('id', 'title', 'slug')
             ->has('products')->get();
-        $products = Product::query()->select('id', 'slug', 'title', 'thumbnail', 'price')
-            ->when($category?->exists, function (Builder $query) use ($category) {
-                $query->whereRelation('categories', 'categories.id', $category->id);
+        $products = Product::search(request('search') ?: '')
+            ->query(function (Builder $query) use ($category) {
+                $query->select('id', 'slug', 'title', 'thumbnail', 'price')
+                    ->when($category?->exists, function (Builder $query) use ($category) {
+                        $query->whereRelation('categories', 'categories.id', $category->id);
+                    })
+                    ->filtered()
+                    ->sorted();
             })
-            ->filtered()
-            ->sorted()
             ->paginate(6);
 
         return view('catalog.index', compact('brands', 'categories', 'products', 'category'));

@@ -8,10 +8,13 @@
                 </a>
             </div><!-- /.header-logo -->
             <div class="header-menu grow hidden lg:flex items-center ml-8 mr-8 gap-8">
-                <form class="hidden lg:flex gap-3">
-                    <input type="search"
-                           class="w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xs shadow-transparent outline-0 transition"
-                           placeholder="Поиск..." required>
+                <form action="{{ route('catalog') }}" class="hidden lg:flex gap-3">
+                    <input
+                        name="search"
+                        value="{{ request()->get('search') ?? '' }}"
+                        type="search"
+                        class="w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xs shadow-transparent outline-0 transition"
+                        placeholder="Поиск..." required>
                     <button type="submit" class="shrink-0 w-12 !h-12 !px-0 btn btn-pink">
                         <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 52 52">
                             <path
@@ -21,7 +24,7 @@
                 </form>
                 <nav class="hidden 2xl:flex gap-8">
                     <a href="{{ route('home') }}" class="text-white hover:text-pink font-bold">Home</a>
-                    <a href="#" class="text-white hover:text-pink font-bold">Product catalog</a>
+                    <a href="{{ route('catalog') }}" class="text-white hover:text-pink font-bold">Product catalog</a>
                     <a href="#" class="text-white hover:text-pink font-bold">Cart</a>
                 </nav>
             </div><!-- /.header-menu -->
@@ -56,7 +59,8 @@
                         >
                             <h5 class="text-body text-xs">My profile</h5>
                             <div class="flex items-center mt-3">
-                                <img src="{{ auth()->user()->avatar }}" class="w-11 h-11 rounded-full" alt="{{ auth()->user()->name }}">
+                                <img src="{{ auth()->user()->avatar }}" class="w-11 h-11 rounded-full"
+                                     alt="{{ auth()->user()->name }}">
                                 <span class="ml-3 text-xs md:text-sm font-bold">{{ auth()->user()->name }}</span>
                             </div>
                             <div class="mt-4">
@@ -74,7 +78,8 @@
                                     @csrf
 
                                     <button type="submit" class="inline-flex items-center text-body hover:text-pink">
-                                        <svg class="shrink-0 w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                        <svg class="shrink-0 w-5 h-5" xmlns="http://www.w3.org/2000/svg"
+                                             fill="currentColor"
                                              viewBox="0 0 20 20">
                                             <path
                                                 d="m19.026 7.643-3.233-3.232a.833.833 0 0 0-1.178 1.178l3.232 3.233c.097.098.18.207.25.325-.012 0-.022-.007-.035-.007l-13.07.027a.833.833 0 1 0 0 1.666l13.066-.026c.023 0 .042-.012.064-.014a1.621 1.621 0 0 1-.278.385l-3.232 3.233a.833.833 0 1 0 1.178 1.178l3.233-3.232a3.333 3.333 0 0 0 0-4.714h.003Z"/>

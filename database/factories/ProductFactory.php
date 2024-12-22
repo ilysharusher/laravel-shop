@@ -26,6 +26,7 @@ class ProductFactory extends Factory
                 'images/products',
                 'images/products'
             ),
+            'description' => fake()->realText(),
             'price' => fake()->numberBetween(1000, 10000),
             'on_home_page' => fake()->boolean(),
             'sorting' => fake()->numberBetween(1, 1000),

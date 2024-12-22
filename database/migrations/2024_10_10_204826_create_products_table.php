@@ -17,7 +17,10 @@ return new class () extends Migration {
             $table->id();
 
             $table->string('slug')->unique();
-            $table->string('title');
+
+            $table->string('title')->fulltext();
+            $table->text('description')->fulltext()->nullable();
+
             $table->string('thumbnail')->nullable();
             $table->unsignedInteger('price')->default(0);
 
