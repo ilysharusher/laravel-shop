@@ -2,8 +2,12 @@
 
 namespace App\Menu;
 
+use Support\Traits\Makeable;
+
 class MenuItem
 {
+    use Makeable;
+
     public function __construct(
         protected string $title,
         protected string $url,
@@ -22,6 +26,9 @@ class MenuItem
 
     public function isActive(): bool
     {
-        return request()->url() === $this->url;
+        return parse_url(
+                request()->url(),
+                PHP_URL_PATH
+            ) === parse_url($this->url, PHP_URL_PATH);
     }
 }
