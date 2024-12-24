@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class FreshMigrationsCommand extends Command
@@ -28,6 +29,8 @@ class FreshMigrationsCommand extends Command
     {
         if (app()->isLocal()) {
             Storage::deleteDirectory('images');
+
+            Cache::flush();
 
             $this->call('migrate:fresh', ['--seed' => true]);
         } else {
