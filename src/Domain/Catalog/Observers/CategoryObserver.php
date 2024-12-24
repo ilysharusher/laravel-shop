@@ -21,6 +21,7 @@ class CategoryObserver
     public function updated(Category $category): void
     {
         Cache::forget('categories.homePage');
+        Cache::forget('categories.catalogPage');
     }
 
     /**
@@ -29,6 +30,7 @@ class CategoryObserver
     public function deleted(Category $category): void
     {
         Cache::forget('categories.homePage');
+        Cache::forget('categories.catalogPage');
     }
 
     /**

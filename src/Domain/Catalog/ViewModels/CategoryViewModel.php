@@ -17,4 +17,11 @@ class CategoryViewModel
             return Category::query()->homePage()->get();
         });
     }
+
+    public function catalogPage(): Collection
+    {
+        return Cache::rememberForever('categories.catalogPage', static function () {
+            return Category::query()->catalogPage()->get();
+        });
+    }
 }

@@ -17,4 +17,11 @@ class BrandViewModel
             return Brand::query()->homePage()->get();
         });
     }
+
+    public function catalogPage(): Collection
+    {
+        return Cache::rememberForever('brands.catalogPage', static function () {
+            return Brand::query()->catalogPage()->get();
+        });
+    }
 }

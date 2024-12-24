@@ -18,10 +18,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        BrandFactory::new()->count(3)->create();
+        BrandFactory::new()->count(20)->create();
 
-        CategoryFactory::new()->count(10)->has(
-            ProductFactory::new()->count(random_int(5, 10))
+        CategoryFactory::new()->count(30)->has(
+            ProductFactory::new()->count(random_int(10, 50))
         )->create();
     }
 }

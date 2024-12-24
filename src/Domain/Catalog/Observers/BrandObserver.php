@@ -21,6 +21,7 @@ class BrandObserver
     public function updated(Brand $brand): void
     {
         Cache::forget('brands.homePage');
+        Cache::forget('brands.catalogPage');
     }
 
     /**
@@ -29,6 +30,7 @@ class BrandObserver
     public function deleted(Brand $brand): void
     {
         Cache::forget('brands.homePage');
+        Cache::forget('brands.catalogPage');
     }
 
     /**
