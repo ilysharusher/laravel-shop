@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Pipeline\Pipeline;
 use Laravel\Scout\Attributes\SearchUsingFullText;
 use Laravel\Scout\Searchable;
 use Support\Casts\PriceCast;
@@ -59,16 +60,12 @@ class Product extends Model
             ->limit(6);
     }
 
-    public function scopeFiltered(Builder $query): void
+    public function scopeFiltered(Builder $query)
     {
-        $query->when(request()->filled('filters.brands'), function (Builder $query) {
-            $query->whereIn('brand_id', request('filters.brands'));
-        })->when(request()->filled('filters.price'), function (Builder $query) {
-            $query->whereBetween('price', [
-                request('filters.price.from', 0) * 100,
-                request('filters.price.to', 100000) * 100
-            ]);
-        });
+        return app(Pipeline::class) // TODO: learn about Pipeline
+            ->send($query)
+            ->through(filters())
+            ->thenReturn();
     }
 
     public function scopeSorted(Builder $builder): void

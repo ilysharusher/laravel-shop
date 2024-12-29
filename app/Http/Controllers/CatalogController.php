@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Domain\Catalog\Models\Category;
-use Domain\Catalog\ViewModels\BrandViewModel;
 use Domain\Catalog\ViewModels\CategoryViewModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
@@ -16,7 +15,6 @@ class CatalogController extends Controller
      */
     public function __invoke(?Category $category): View
     {
-        $brands = BrandViewModel::make()->catalogPage();
         $categories = CategoryViewModel::make()->catalogPage();
         $products = Product::search(request('search') ?: '')
             ->query(function (Builder $query) use ($category) {
@@ -25,10 +23,10 @@ class CatalogController extends Controller
                         $query->whereRelation('categories', 'categories.id', $category->id);
                     })
                     ->filtered()
-                    ->sorted();
+                    ->sorted(); // TODO: Remake sorting as a filter way
             })
             ->paginate(6);
 
-        return view('catalog.index', compact('brands', 'categories', 'products', 'category'));
+        return view('catalog.index', compact('categories', 'products', 'category'));
     }
 }

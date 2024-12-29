@@ -25,50 +25,13 @@
 
         <div class="flex flex-col lg:flex-row gap-12 lg:gap-6 2xl:gap-8 mt-8">
             <aside class="basis-2/5 xl:basis-1/4">
-                <form action="{{ route('catalog', $category) }}"
-                      class="overflow-auto max-h-[320px] lg:max-h-[100%] space-y-10 p-6 2xl:p-8 rounded-2xl bg-card">
-                    <div>
-                        <h5 class="mb-4 text-sm 2xl:text-md font-bold">Price</h5>
-                        <div class="flex items-center justify-between gap-3 mb-2">
-                            <span class="text-body text-xxs font-medium">From, $</span>
-                            <span class="text-body text-xxs font-medium">To, $</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <input
-                                name="filters[price][from]"
-                                value="{{ request()->input('filters.price.from', 0) }}"
-                                type="number"
-                                class="w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xs shadow-transparent outline-0 transition"
-                                placeholder="From"
-                            >
-                            <span class="text-body text-sm font-medium">–</span>
-                            <input
-                                name="filters[price][to]"
-                                value="{{ request()->input('filters.price.to', 100000) }}"
-                                type="number"
-                                class="w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xs shadow-transparent outline-0 transition"
-                                placeholder="To"
-                            >
-                        </div>
-                    </div>
-                    <div>
-                        <h5 class="mb-4 text-sm 2xl:text-md font-bold">Brand</h5>
+                <form action="{{ route('catalog', $category) }}" class="overflow-auto max-h-[320px] lg:max-h-[100%] space-y-10 p-6 2xl:p-8 rounded-2xl bg-card">
 
-                        @foreach($brands as $brand)
-                            <div class="form-checkbox">
-                                <input
-                                    name="filters[brands][{{ $brand->id }}]"
-                                    value="{{ $brand->id }}"
-                                    type="checkbox"
-                                    id="filters-brands-{{ $brand->id }}"
-                                    @checked(request()->input("filters.brands.{$brand->id}"))
-                                >
-                                <label for="filters-brands-{{ $brand->id }}" class="form-checkbox-label">
-                                    {{ $brand->title }}
-                                </label>
-                            </div>
-                        @endforeach
-                    </div>
+                    <input type="hidden" name="sort" value="{{ request()->input('sort') }}">
+
+                    @foreach(filters() as $filter)
+                        {!! $filter !!}
+                    @endforeach
 
                     <div>
                         <button type="submit" class="w-full !h-16 btn btn-pink">
@@ -99,6 +62,7 @@
                                           clip-rule="evenodd"/>
                                 </svg>
                             </a>
+                            {{-- TODO: Implement this buttons via middlewares --}}
                             <a href="catalog-list.html"
                                class="inline-flex items-center justify-center w-10 h-10 rounded-md bg-card text-white hover:text-pink">
                                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -114,6 +78,7 @@
                     <div x-data="{}" class="flex flex-col sm:flex-row sm:items-center gap-3">
                         <span class="text-body text-xxs sm:text-xs">Sort by</span>
                         <form x-ref="sort" action="{{ route('catalog', $category) }}">
+                            {{-- TODO: Save filters when changing sorting my dynamic URL --}}
                             <select
                                 x-on:change="$refs.sort.submit()"
                                 name="sort"

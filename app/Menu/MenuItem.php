@@ -27,8 +27,8 @@ class MenuItem
     public function isActive(): bool
     {
         return parse_url(
-                request()->url(),
-                PHP_URL_PATH
-            ) === parse_url($this->url, PHP_URL_PATH);
+            request()->url(),
+            PHP_URL_PATH
+        ) === parse_url($this->url, PHP_URL_PATH);
     }
 }
