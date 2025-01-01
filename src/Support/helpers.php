@@ -37,6 +37,15 @@ if (!function_exists('filters')) {
 }
 
 if (!function_exists('sorter')) {
+
+    /**
+     * Retrieve the Sorter instance from the service container.
+     *
+     * This function provides a convenient way to access the Sorter instance,
+     * which is used to handle sorting operations in the application.
+     *
+     * @return \Domain\Catalog\Sorters\Sorter The Sorter instance.
+     */
     function sorter(): Sorter
     {
         return app(Sorter::class);

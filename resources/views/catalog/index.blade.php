@@ -25,7 +25,8 @@
 
         <div class="flex flex-col lg:flex-row gap-12 lg:gap-6 2xl:gap-8 mt-8">
             <aside class="basis-2/5 xl:basis-1/4">
-                <form action="{{ route('catalog', $category) }}" class="overflow-auto max-h-[320px] lg:max-h-[100%] space-y-10 p-6 2xl:p-8 rounded-2xl bg-card">
+                <form action="{{ route('catalog', $category) }}"
+                      class="overflow-auto max-h-[320px] lg:max-h-[100%] space-y-10 p-6 2xl:p-8 rounded-2xl bg-card">
 
                     <input type="hidden" name="sort" value="{{ request()->input('sort') }}">
 
@@ -77,10 +78,10 @@
                     </div>
                     <div x-data="{}" class="flex flex-col sm:flex-row sm:items-center gap-3">
                         <span class="text-body text-xxs sm:text-xs">Sort by</span>
-                        <form x-ref="sort" action="{{ route('catalog', $category) }}">
-                            {{-- TODO: Save filters when changing sorting my dynamic URL --}}
+
+                        <div>
                             {!! sorter() !!}
-                        </form>
+                        </div>
                     </div>
                 </div>
 
@@ -95,4 +96,19 @@
             </div>
         </div>
     </section>
+
+    <script>
+        function updateSortUrl(sortValue) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('sort', sortValue);
+
+            const filters = document.querySelectorAll('input[name^="filters"]');
+            filters.forEach(filter => {
+                if (filter.type === 'checkbox' && !filter.checked) return;
+                url.searchParams.set(filter.name, filter.value);
+            });
+
+            window.location.href = url.toString();
+        }
+    </script>
 @endsection
