@@ -29,4 +29,20 @@ class Sorter implements Stringable
     {
         return request()->input('sort', 'default');
     }
+
+    public function apply($query): void
+    {
+        $column = str($this->requestValue());
+
+        $query->when($column->value(), function ($query) use ($column) {
+            if ($column->value() === 'default') {
+                return;
+            }
+
+            $query->orderBy(
+                $column->remove('-'),
+                $column->contains('-') ? 'desc' : 'asc'
+            );
+        });
+    }
 }

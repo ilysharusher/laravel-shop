@@ -70,15 +70,7 @@ class Product extends Model
 
     public function scopeSorted(Builder $builder): void
     {
-        $builder->when(request()->filled('sort'), function (Builder $builder) {
-            $column = request()->str('sort');
-
-            if ($column->contains(['price', 'title'])) {
-                $direction = $column->contains('-') ? 'desc' : 'asc';
-
-                $builder->orderBy((string)$column->remove('-'), $direction);
-            }
-        });
+        sorter()->apply($builder);
     }
 
     public function brand(): BelongsTo

@@ -23,7 +23,7 @@ class CatalogController extends Controller
                         $query->whereRelation('categories', 'categories.id', $category->id);
                     })
                     ->filtered()
-                    ->sorted(); // TODO: Remake sorting as a filter way
+                    ->sorted();
             })
             ->paginate(6);
 
