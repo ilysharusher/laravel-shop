@@ -62,7 +62,7 @@ class Product extends Model
 
     public function scopeFiltered(Builder $query)
     {
-        return app(Pipeline::class) // TODO: learn about Pipeline
+        return app(Pipeline::class)
             ->send($query)
             ->through(filters())
             ->thenReturn();

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Database\Factories\BrandFactory;
 use Database\Factories\CategoryFactory;
 use Database\Factories\ProductFactory;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Seeder;
 use Random\RandomException;
 
@@ -23,5 +24,11 @@ class DatabaseSeeder extends Seeder
         CategoryFactory::new()->count(30)->has(
             ProductFactory::new()->count(random_int(10, 50))
         )->create();
+
+        UserFactory::new()->create([
+            'name' => 'admin',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
     }
 }

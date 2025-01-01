@@ -79,24 +79,7 @@
                         <span class="text-body text-xxs sm:text-xs">Sort by</span>
                         <form x-ref="sort" action="{{ route('catalog', $category) }}">
                             {{-- TODO: Save filters when changing sorting my dynamic URL --}}
-                            <select
-                                x-on:change="$refs.sort.submit()"
-                                name="sort"
-                                class="form-select w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xxs sm:text-xs shadow-transparent outline-0 transition">
-                                <option value="" class="text-dark">Default</option>
-                                <option
-                                    @selected(request()->input('sort') === 'price')
-                                    value="price" class="text-dark">Cheaper
-                                </option>
-                                <option
-                                    @selected(request()->input('sort') === '-price')
-                                    value="-price" class="text-dark">More expensive
-                                </option>
-                                <option
-                                    @selected(request()->input('sort') === 'title')
-                                    value="title" class="text-dark">By name
-                                </option>
-                            </select>
+                            {!! sorter() !!}
                         </form>
                     </div>
                 </div>
