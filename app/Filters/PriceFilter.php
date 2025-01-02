@@ -22,7 +22,7 @@ class PriceFilter extends AbstractFilter
         return $query->when($this->requestValue(), function (Builder $query) {
             $query->whereBetween('price', [
                 $this->requestValue('from', 0) * 100,
-                $this->requestValue('to', 100000) * 100,
+                $this->requestValue('to', 10000) * 100,
             ]);
         });
     }

@@ -27,7 +27,7 @@ class ProductFactory extends Factory
                 'images/products'
             ),
             'description' => fake()->realText(),
-            'price' => fake()->numberBetween(1000, 10000),
+            'price' => fake()->numberBetween(1000, 1000000),
             'on_home_page' => fake()->boolean(),
             'sorting' => fake()->numberBetween(1, 1000),
             'brand_id' => Brand::query()->inRandomOrder()->first()
