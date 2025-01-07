@@ -22,7 +22,7 @@ class ProductController extends Controller
             ->where('id', '!=', $product->id)
             ->get();
 
-        $options = $product->optionValues->mapToGroups(fn($optionValue) => [
+        $options = $product->optionValues->mapToGroups(fn ($optionValue) => [
             $optionValue->option->title => $optionValue,
         ]);
 

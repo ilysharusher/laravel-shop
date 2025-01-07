@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
                 ->hasAttached($optionValues)
                 ->hasAttached(
                     $properties,
-                    fn() => ['value' => ucfirst(fake()->word())]
+                    fn () => ['value' => ucfirst(fake()->word())]
                 )
         )->create();
     }
