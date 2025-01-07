@@ -17,6 +17,7 @@ return new class () extends Migration {
             $table->id();
 
             $table->string('slug')->unique();
+            $table->json('json_properties')->nullable();
 
             $table->string('title')->fulltext();
             $table->text('description')->fulltext()->nullable();

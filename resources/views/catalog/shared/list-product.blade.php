@@ -1,15 +1,13 @@
 <div class="product-card flex flex-col md:flex-row rounded-3xl bg-card">
-    <a href="#" class="product-card-photo overflow-hidden shrink-0 md:w-[260px] xl:w-[320px] h-[320px] md:h-full rounded-3xl">
+    <a href="{{ route('product.show', $product->slug) }}" class="product-card-photo overflow-hidden shrink-0 md:w-[260px] xl:w-[320px] h-[320px] md:h-full rounded-3xl">
         <img src="{{ $product->makeThumbnail('345x320') }}" class="object-cover w-full h-full" alt="{{ $product->title }}">
     </a>
     <div class="grow flex flex-col py-8 px-6 md:px-8">
-        <h3 class="text-sm lg:text-md font-black"><a href="#" class="inline-block text-white hover:text-pink">{{ $product->title }}</a></h3>
+        <h3 class="text-sm lg:text-md font-black"><a href="{{ route('product.show', $product->slug) }}" class="inline-block text-white hover:text-pink">{{ $product->title }}</a></h3>
         {{--<ul class="space-y-1 mt-4 text-xxs">
-            <li class="flex justify-between text-body"><strong>Weight (g):</strong> 92</li>
-            <li class="flex justify-between text-body"><strong>Sensor type</strong> Optical</li>
-            <li class="flex justify-between text-body"><strong>Mouse DPI:</strong> 18000</li>
-            <li class="flex justify-between text-body"><strong>Number of mouse buttons:</strong> 8</li>
-            <li class="flex justify-between text-body"><strong>Backlight:</strong> RGB</li>
+            @foreach($product->properties as $property)
+                <li class="flex justify-between text-body"><strong>{{ $property->title }}:</strong> {{ $property->pivot->value }}</li>
+            @endforeach
         </ul>--}}
         <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6 mt-6">
             <div class="flex items-baseline gap-4">

@@ -15,3 +15,4 @@ Route::get('storage/images/{dir}/{method}/{size}/{file}', ThumbnailController::c
 
 include __DIR__ . '/Domain/auth.php';
 include __DIR__ . '/Domain/catalog.php';
+include __DIR__ . '/Domain/product.php';

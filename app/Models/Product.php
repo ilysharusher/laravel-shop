@@ -57,6 +57,7 @@ class Product extends Model
     {
         $query->where('on_home_page', true)
             ->orderBy('sorting')
+            ->with('properties')
             ->limit(6);
     }
 
@@ -81,5 +82,16 @@ class Product extends Model
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
+    }
+
+    public function properties(): BelongsToMany
+    {
+        return $this->belongsToMany(Property::class)
+            ->withPivot('value');
+    }
+
+    public function optionValues(): BelongsToMany
+    {
+        return $this->belongsToMany(OptionValue::class);
     }
 }
