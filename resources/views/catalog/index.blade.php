@@ -56,7 +56,7 @@
 
                         @include('catalog.shared.view')
 
-                        <div class="text-body text-xxs sm:text-xs">Found: {{ $products->count() }} products</div>
+                        <div class="text-body text-xxs sm:text-xs">Found: {{ $products->total() }} products</div>
                     </div>
                     <div x-data="{}" class="flex flex-col sm:flex-row sm:items-center gap-3">
                         <span class="text-body text-xxs sm:text-xs">Sort by</span>
@@ -67,12 +67,12 @@
                     </div>
                 </div>
 
-                @if($viewMode === 'grid')
+                @if(is_catalog_view('grid'))
                     <div
                         class="products grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 2xl:gap-x-8 gap-y-8 lg:gap-y-10 2xl:gap-y-12">
                         @each('catalog.shared.product', $products, 'product')
                     </div>
-                @elseif($viewMode === 'list')
+                @elseif(is_catalog_view('list'))
                     <div class="products grid grid-cols-1 gap-y-8">
                         @each('catalog.shared.list-product', $products, 'product')
                     </div>

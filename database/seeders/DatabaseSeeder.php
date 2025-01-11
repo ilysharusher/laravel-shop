@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
 
         $properties = PropertyFactory::new()->count(5)->create();
 
-        CategoryFactory::new()->count(30)->has(
+        CategoryFactory::new()->count(10)->has(
             ProductFactory::new()->count(5)
                 ->hasAttached($optionValues)
                 ->hasAttached(

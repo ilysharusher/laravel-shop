@@ -1,6 +1,6 @@
 <div class="flex items-center gap-2">
-    <a href="{{ route('catalog', array_merge(request()->query(), ['category' => $category, 'view' => 'grid'])) }}"
-       class="inline-flex items-center justify-center w-10 h-10 rounded-md bg-card {{ $viewMode === 'grid' ? 'text-pink pointer-events-none' : 'text-white hover:text-pink' }}">
+    <a href="{{ catalog_url($category, ['view' => 'grid']) }}"
+       class="inline-flex items-center justify-center w-10 h-10 rounded-md bg-card {{ is_catalog_view('grid') ? 'text-pink pointer-events-none' : 'text-white hover:text-pink' }}">
         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
              viewBox="0 0 52 52">
             <path fill-rule="evenodd"
@@ -9,8 +9,8 @@
         </svg>
     </a>
 
-    <a href="{{ route('catalog', array_merge(request()->query(), ['category' => $category, 'view' => 'list'])) }}"
-       class="inline-flex items-center justify-center w-10 h-10 rounded-md bg-card {{ $viewMode === 'list' ? 'text-pink pointer-events-none' : 'text-white hover:text-pink' }}">
+    <a href="{{ catalog_url($category, ['view' => 'list']) }}"
+       class="inline-flex items-center justify-center w-10 h-10 rounded-md bg-card {{ is_catalog_view('list') ? 'text-pink pointer-events-none' : 'text-white hover:text-pink' }}">
         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
              viewBox="0 0 52 52">
             <path fill-rule="evenodd"

@@ -15,13 +15,9 @@ class CatalogViewMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $view = $request->query('view', $request->cookie('view_mode', 'grid'));
-
-        if ($request->query('view') && $view !== $request->cookie('view_mode')) {
-            cookie()->queue('view_mode', $view, 43200);
+        if ($request->has('view')) {
+            session()?->put('view', $request->get('view'));
         }
-
-        view()->share('viewMode', $view);
 
         return $next($request);
     }
