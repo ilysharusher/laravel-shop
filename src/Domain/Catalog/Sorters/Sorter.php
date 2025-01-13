@@ -2,22 +2,44 @@
 
 namespace Domain\Catalog\Sorters;
 
-use Stringable;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Support\Stringable;
 
-class Sorter implements Stringable
+class Sorter
 {
-    protected array $columns = [
-        'default' => 'Default',
-        'title' => 'By name',
-        'price' => 'By price (low to high)',
-        '-price' => 'By price (high to low)',
-    ];
+    public const KEY = 'sort';
 
-    public function __toString(): string
+    public function __construct(
+        protected array $columns = []
+    ) {
+    }
+
+    public function apply(Builder $query): Builder
     {
-        return view('catalog.sorter.sort', [
-            'sorter' => $this,
-        ])->render();
+        $sortData = $this->sortData();
+
+        return $query->when($sortData->contains($this->columns()), function (Builder $query) use ($sortData) {
+            $query->orderBy(
+                $sortData->remove('-')->toString(),
+                $sortData->startsWith('-') ? 'desc' : 'asc'
+            );
+        });
+    }
+
+    public function isActive(string $column, string $direction = 'asc'): bool
+    {
+        $column = trim($column, '-');
+
+        if (strtolower($direction) === 'desc') {
+            $column = "-{$column}";
+        }
+
+        return request($this->key()) === $column;
+    }
+
+    public function sortData(): Stringable
+    {
+        return request()->str($this->key());
     }
 
     public function columns(): array
@@ -25,24 +47,8 @@ class Sorter implements Stringable
         return $this->columns;
     }
 
-    public function requestValue(): string
+    public function key(): string
     {
-        return request()->input('sort', 'default');
-    }
-
-    public function apply($query): void
-    {
-        $column = str($this->requestValue());
-
-        $query->when($column->value(), function ($query) use ($column) {
-            if ($column->value() === 'default') {
-                return;
-            }
-
-            $query->orderBy(
-                $column->remove('-'),
-                $column->contains('-') ? 'desc' : 'asc'
-            );
-        });
+        return self::KEY;
     }
 }

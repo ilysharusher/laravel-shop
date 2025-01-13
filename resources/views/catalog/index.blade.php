@@ -58,11 +58,34 @@
 
                         <div class="text-body text-xxs sm:text-xs">Found: {{ $products->total() }} products</div>
                     </div>
-                    <div x-data="{}" class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <div x-data="{sort: '{{ catalog_url($category, ['sort' => request('sort')]) }}'}" class="flex flex-col sm:flex-row sm:items-center gap-3">
                         <span class="text-body text-xxs sm:text-xs">Sort by</span>
-
                         <div>
-                            {!! sorter() !!}
+                            <select
+                                name="sort"
+                                x-model="sort"
+                                x-on:change="window.location = sort"
+                                class="form-select w-full h-12 px-4 rounded-lg border border-body/10 focus:border-pink focus:shadow-[0_0_0_3px_#EC4176] bg-white/5 text-white text-xxs sm:text-xs shadow-transparent outline-0 transition">
+
+                                <option value="{{ catalog_url($category, ['sort' => '']) }}" class="text-dark">
+                                    Default
+                                </option>
+
+                                <option value="{{ catalog_url($category, ['sort' => 'price']) }}"
+                                        class="text-dark">
+                                    From cheap to expensive
+                                </option>
+
+                                <option value="{{ catalog_url($category, ['sort' => '-price']) }}"
+                                        class="text-dark">
+                                    From expensive to cheap
+                                </option>
+
+                                <option value="{{ catalog_url($category, ['sort' => 'title']) }}"
+                                        class="text-dark">
+                                    Name
+                                </option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -84,21 +107,4 @@
             </div>
         </div>
     </section>
-@endsection
-
-@section('scripts')
-    <script>
-        function updateSortUrl(sortValue) {
-            const url = new URL(window.location.href);
-            url.searchParams.set('sort', sortValue);
-
-            const filters = document.querySelectorAll('input[name^="filters"]');
-            filters.forEach(filter => {
-                if (filter.type === 'checkbox' && !filter.checked) return;
-                url.searchParams.set(filter.name, filter.value);
-            });
-
-            window.location.href = url.toString();
-        }
-    </script>
 @endsection
