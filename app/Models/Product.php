@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\ProductJsonProperties;
 use Domain\Catalog\Facades\Sorter;
 use Domain\Catalog\Models\Brand;
 use Domain\Catalog\Models\Category;
@@ -27,6 +28,7 @@ class Product extends Model
 
     protected $fillable = [
         'slug',
+        'json_properties',
         'title',
         'description',
         'thumbnail',
@@ -36,9 +38,23 @@ class Product extends Model
         'sorting',
     ];
 
-    protected $casts = [
-        'price' => PriceCast::class
-    ];
+    protected function casts(): array
+    {
+        return [
+            'json_properties' => 'array',
+            'price' => PriceCast::class
+        ];
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::created(static function (Product $product) {
+            dispatch(new ProductJsonProperties($product))
+                ->delay(now()->addSeconds(10));
+        });
+    }
 
     protected function thumbnailDir(): string
     {

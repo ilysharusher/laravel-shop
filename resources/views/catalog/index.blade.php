@@ -93,11 +93,11 @@
                 @if(is_catalog_view('grid'))
                     <div
                         class="products grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 2xl:gap-x-8 gap-y-8 lg:gap-y-10 2xl:gap-y-12">
-                        @each('catalog.shared.product', $products, 'product')
+                        @each('product.shared.product', $products, 'product')
                     </div>
                 @elseif(is_catalog_view('list'))
                     <div class="products grid grid-cols-1 gap-y-8">
-                        @each('catalog.shared.list-product', $products, 'product')
+                        @each('product.shared.list-product', $products, 'product')
                     </div>
                 @endif
 

@@ -18,7 +18,7 @@ class CatalogController extends Controller
         $categories = CategoryViewModel::make()->catalogPage();
         $products = Product::search(request('search') ?: '')
             ->query(function (Builder $query) use ($category) {
-                $query->select('id', 'slug', 'title', 'thumbnail', 'price')
+                $query->select('id', 'slug', 'title', 'thumbnail', 'price', 'json_properties')
                     ->when($category?->exists, function (Builder $query) use ($category) {
                         $query->whereRelation('categories', 'categories.id', $category->id);
                     })
