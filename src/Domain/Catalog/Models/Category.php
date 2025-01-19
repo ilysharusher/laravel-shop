@@ -2,10 +2,10 @@
 
 namespace Domain\Catalog\Models;
 
-use App\Models\Product;
 use Domain\Catalog\Collections\CategoryCollection;
 use Domain\Catalog\Observers\CategoryObserver;
 use Domain\Catalog\QueryBuilders\CategoryQueryBuilder;
+use Domain\Product\Models\Product;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

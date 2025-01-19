@@ -2,7 +2,8 @@
 
 namespace Tests\Feature\App\Models;
 
-use App\Models\Product;
+use Database\Factories\ProductFactory;
+use Domain\Product\Models\Product;
 use Support\ValueObjects\Price;
 use Tests\TestCase;
 
@@ -10,7 +11,7 @@ class ProductTest extends TestCase
 {
     public function test_price_casting(): void
     {
-        $product = Product::factory()->create([
+        $product = ProductFactory::new()->create([
             'price' => 10000,
         ]);
 

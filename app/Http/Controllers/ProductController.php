@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Services\ViewedProductService;
+use Domain\Product\Models\Product;
 use Illuminate\Contracts\View\View;
 
 class ProductController extends Controller
@@ -22,13 +22,9 @@ class ProductController extends Controller
             ->where('id', '!=', $product->id)
             ->get();
 
-        $options = $product->optionValues->mapToGroups(fn ($optionValue) => [
-            $optionValue->option->title => $optionValue,
-        ]);
-
         return view('product.show', [
             'product' => $product,
-            'options' => $options,
+            'options' => $product->optionValues->keyValues(),
             'viewedProducts' => $viewedProducts,
         ]);
     }

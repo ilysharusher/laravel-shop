@@ -14,11 +14,9 @@ abstract class AbstractFilter implements Stringable
         ])->render();
     }
 
-    public function __invoke(Builder $query, $next): void
+    public function __invoke(Builder $query, $next): Builder
     {
-        $this->apply($query);
-
-        $next($query);
+        return $next($this->apply($query));
     }
 
     abstract public function title(): string;

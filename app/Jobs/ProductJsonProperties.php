@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Product;
+use Domain\Product\Models\Product;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -25,9 +25,7 @@ class ProductJsonProperties implements ShouldQueue, ShouldBeUnique
      */
     public function handle(): void
     {
-        $properties = $this->product->properties->mapWithKeys(fn ($property) => [
-            $property->title => $property->pivot->value,
-        ]);
+        $properties = $this->product->properties->keyValues();
 
         $this->product->updateQuietly(['json_properties' => $properties]);
     }
