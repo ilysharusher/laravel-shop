@@ -13,6 +13,8 @@ class ProductController extends Controller
      */
     public function __invoke(Product $product): View
     {
+        // TODO: Implement ViewModel for Product Page
+
         $product->load('optionValues.option');
 
         ViewedProductService::add($product->id);

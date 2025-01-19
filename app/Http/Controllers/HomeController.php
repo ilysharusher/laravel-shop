@@ -11,6 +11,8 @@ class HomeController extends Controller
 {
     public function __invoke(): View
     {
+        // TODO: Implement ViewModel for Home Page
+
         $categories = CategoryViewModel::make()->homePage();
         $products = Product::query()->homePage()->get();
         $brands = BrandViewModel::make()->homePage();
