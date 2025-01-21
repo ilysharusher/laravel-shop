@@ -24,7 +24,10 @@ class ProductJsonPropertiesTest extends TestCase
                 fn () => ['value' => ucfirst(fake()->word())]
             )->create();
 
-        $this->assertEmpty($product->json_properties);
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'json_properties' => null,
+        ]);
 
         Queue::swap($queue);
 
@@ -32,6 +35,9 @@ class ProductJsonPropertiesTest extends TestCase
 
         $product->refresh();
 
-        $this->assertNotEmpty($product->json_properties);
+        $this->assertDatabaseMissing('products', [
+            'id' => $product->id,
+            'json_properties' => null,
+        ])->assertNotEmpty($product->json_properties);
     }
 }

@@ -8,14 +8,11 @@
         <h3 class="text-sm lg:text-md font-black"><a href="{{ route('product.show', $product->slug) }}"
                                                      class="inline-block text-white hover:text-pink">{{ $product->title }}</a>
         </h3>
-        <!-- TODO: Add accessor here (34:10) -->
-        @if($product->json_properties)
-            <ul class="space-y-1 mt-4 text-xxs">
-                @foreach($product->json_properties as $title => $value)
-                    <li class="flex justify-between text-body"><strong>{{ $title }}:</strong> {{ $value }}</li>
-                @endforeach
-            </ul>
-        @endif
+        <ul class="space-y-1 mt-4 text-xxs">
+            @foreach($product->json_properties as $title => $value)
+                <li class="flex justify-between text-body"><strong>{{ $title }}:</strong> {{ $value }}</li>
+            @endforeach
+        </ul>
         <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6 mt-6">
             <div class="flex items-baseline gap-4">
                 <div class="text-pink text-md xl:text-lg font-black">{{ $product->price }}</div>
