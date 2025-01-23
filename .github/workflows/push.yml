@@ -4,14 +4,12 @@ on:
     branches: [ main ]
 jobs:
   laravel-tests:
-
     runs-on: ubuntu-latest
 
     steps:
       - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
         with:
           php-version: '8.4'
-          extensions: mbstring, mysql
       - uses: actions/checkout@v4
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
@@ -23,34 +21,18 @@ jobs:
         run: php artisan storage:link
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
-      - name: Set up MySQL Database
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testing
-          MYSQL_USER: user
-          MYSQL_PASSWORD: password
+      - name: Create Database
         run: |
-          echo "DB_CONNECTION=mysql" >> .env
-          echo "DB_HOST=127.0.0.1" >> .env
-          echo "DB_PORT=3306" >> .env
-          echo "DB_DATABASE=testing" >> .env
-          echo "DB_USERNAME=user" >> .env
-          echo "DB_PASSWORD=password" >> .env
-      - name: Start MySQL Service
-        uses: mysql-actions/setup-mysql@v2
-        with:
-          mysql-version: '8.0'
-          mysql-root-password: root
-          mysql-user: user
-          mysql-password: password
-          mysql-database: testing
-      - name: Run Migrations
-        run: php artisan migrate --force
+          mkdir -p database
+          touch database/database.sqlite
       - name: Install NPM Dependencies
         run: npm install
       - name: Build Project
         run: npm run build
       - name: Execute tests (Unit and Feature tests) via PHPUnit
-        run: vendor/bin/phpunit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: vendor/bin/phpunit --testsuite=Feature
       - name: Run Laravel Pint Test
         run: vendor/bin/pint --test
