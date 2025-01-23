@@ -21,18 +21,19 @@ jobs:
         run: php artisan storage:link
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
-      - name: Create Database
+      - name: Set up MySQL
+        env:
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          DB_DATABASE: tests
         run: |
-          mkdir -p database
-          touch database/database.sqlite
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USERNAME }} -p${{ env.DB_PASSWORD }}
       - name: Install NPM Dependencies
         run: npm install
       - name: Build Project
         run: npm run build
       - name: Execute tests (Unit and Feature tests) via PHPUnit
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
         run: vendor/bin/phpunit
       - name: Run Laravel Pint Test
         run: vendor/bin/pint --test
