@@ -36,19 +36,23 @@ class MakeDomainCommand extends Command
      */
     public function handle(): int
     {
-        $this->domain = ucfirst($this->ask('Domain name'));
+        try {
+            $this->domain = ucfirst($this->ask('What is the domain name?'));
 
-        File::makeDirectory(base_path("src/Domain/$this->domain"));
+            File::makeDirectory(base_path("src/Domain/$this->domain"));
 
-        foreach ($this->directories as $dir) {
-            File::makeDirectory(base_path("src/Domain/$this->domain/$dir"));
+            foreach ($this->directories as $dir) {
+                File::makeDirectory(base_path("src/Domain/$this->domain/$dir"));
+            }
+
+            $this->registerServiceProvider();
+
+            return self::SUCCESS;
+        } catch (\Exception $e) {
+            $this->error('An error occurred: ' . $e->getMessage());
+
+            return self::FAILURE;
         }
-
-        $this->registerServiceProvider();
-
-        $this->registerRouteRegistrar();
-
-        return self::SUCCESS;
     }
 
     protected function registerServiceProvider(): void
@@ -73,46 +77,6 @@ class MakeDomainCommand extends Command
                 '/public function register\(\): void\n+\s+\{\n+/m',
                 $this->registerMethodSignature() . $this->appRegister($this->domain),
                 $domainProvider
-            )
-        );
-    }
-
-    protected function registerRouteRegistrar(): void
-    {
-        $this->makeRouteRegistrar();
-
-        $routeProviderPath = app_path('Providers/RouteServiceProvider.php');
-
-        $routeProvider = file_get_contents($routeProviderPath);
-
-        if (Str::contains(
-            $routeProvider,
-            'App\\Routing\\' . $this->domain . 'Registrar'
-        )) {
-            return;
-        }
-
-        file_put_contents(
-            $routeProviderPath,
-            preg_replace(
-                '/protected array \$registrars = \[\n\s+/m',
-                'protected array $registrars = [' . PHP_EOL
-                . $this->tab(2)
-                . '\App\Routing\\' . $this->domain . 'Registrar::class,' . PHP_EOL
-                . $this->tab(2),
-                $routeProvider
-            )
-        );
-    }
-
-    protected function makeRouteRegistrar(): void
-    {
-        file_put_contents(
-            app_path("Routing/{$this->domain}Registrar.php"),
-            str_replace(
-                "{{Domain}}",
-                $this->domain,
-                file_get_contents(base_path("stubs/domain/route_registrar.stub"))
             )
         );
     }
